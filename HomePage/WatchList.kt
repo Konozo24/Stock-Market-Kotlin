@@ -1,5 +1,6 @@
 package com.example.aichatbot.ui.theme
 
+import android.R.attr.onClick
 import android.view.Menu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,8 +36,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.aichatbot.R
+
 
 @Composable
 fun WatchList (navController: NavController) {
@@ -43,11 +47,11 @@ fun WatchList (navController: NavController) {
 }
 
 @Composable
-fun WatchListScreen (navController : NavController) {
+fun WatchListScreen (navController : NavController, stockViewModel: StockViewModel = viewModel()) {
     Scaffold (
         containerColor = Color(0xFF000000), //Black
         bottomBar = {
-            NavigationBarSection()
+            NavigationBarSection(navController = navController)
         }
     ){
         innerPadding -> Column(
@@ -59,7 +63,7 @@ fun WatchListScreen (navController : NavController) {
     ){
         MenuHeader(navController)
         AssetsSection()
-
+        StockSection(stockViewModel)
     }
     }
 
@@ -137,34 +141,103 @@ fun AssetsSection (modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun StockSection (modifier: Modifier = Modifier) {
-    
+fun StockSection (stockViewModel: StockViewModel) {
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ){
+        Text(
+            text = "Charts",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    LaunchedEffect(Unit) {
+        stockViewModel.loadStocks(listOf("AAPL", "GOOG", "TSLA"))
+    }
+
+    stockViewModel.stocks.forEach { stock ->
+        StockRow(stock)
+        Divider(color = Color.Gray, thickness = 1.dp)
+    }
 }
 
 @Composable
-fun NavigationBarSection (modifier: Modifier = Modifier) {
+fun StockRow(stock: StockItem) {
+    val changeColor = if (stock.change >= 0) Color(0xFF4CAF50) else Color(0xFFF44336)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stock.symbol,
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+
+        Column {
+            Text(
+                text = "$${String.format("%.2f", stock.price)}",
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = "${String.format("%.2f", stock.change)}%",
+                color = changeColor,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun NavigationBarSection (navController: NavController) {
 
     Divider(color = Color.Gray, thickness = 1.dp)
 
     Row (
         modifier = Modifier
-        .fillMaxWidth()
-        .background(Color.Black)
-        .navigationBarsPadding()
-        .padding(horizontal = 16.dp, vertical = 8.dp),
+            .fillMaxWidth()
+            .background(Color.Black)
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        NavBarItem(R.drawable.baseline_home_filled_24, "Home")
-        NavBarItem(R.drawable.baseline_bar_chart_24, "Market")
-        NavBarItem(R.drawable.baseline_account_balance_wallet_24, "Wallet")
-        NavBarItem(R.drawable.baseline_account_circle_24, "Account")
+        NavBarItem(R.drawable.baseline_home_filled_24, "Home"){
+            navController.navigate("AiChatBot")
+        }
+        NavBarItem(R.drawable.baseline_bar_chart_24, "Market"){
+            navController.navigate("AiChatBot")
+        }
+        NavBarItem(R.drawable.baseline_account_balance_wallet_24, "Wallet"){
+            navController.navigate("AiChatBot")
+        }
+        NavBarItem(R.drawable.baseline_account_circle_24, "Account"){
+            navController.navigate("AiChatBot")
+        }
     }
 }
 
 @Composable
-fun NavBarItem(icon: Int, label: String) {
+fun NavBarItem(
+    icon: Int,
+    label: String,
+    onClick: () -> Unit) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onClick() }
     ) {
         Icon(
             painter = painterResource(id = icon),

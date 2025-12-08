@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "420144108021",
+    "project_id": "aichatbot-34769",
+    "storage_bucket": "aichatbot-34769.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420144108021:android:338f50641fdd96693cd0bc",
+        "android_client_info": {
+          "package_name": "com.example.aichatbot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9rM2Bz5ZDKEAXgBtkKThdi_nUbizhYgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420144108021:android:38b0657f3c09ddb83cd0bc",
+        "android_client_info": {
+          "package_name": "com.example.brokerx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9rM2Bz5ZDKEAXgBtkKThdi_nUbizhYgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
